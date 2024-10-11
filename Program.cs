@@ -4,15 +4,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 
-
-// SystemTray App:
-// https://stackoverflow.com/questions/995195/how-can-i-make-a-net-windows-forms-application-that-only-runs-in-the-system-tra
-
-// LocalizationSample:
-// https://www.cyberforum.ru/windows-forms/thread2363262.html
-
-// Is it possible to hook into Hardware keyboard events at an Application level?
-// https://www.iditect.com/program-example/c--is-it-possible-to-hook-into-hardware-keyboard-events-at-an-application-level.html
 namespace Klavir
 {
     
@@ -29,7 +20,7 @@ namespace Klavir
 
             if (!singleton.WaitOne(TimeSpan.Zero, true))
             {
-                //MessageBox.Show("Приложение уже запущено!");
+                //MessageBox.Show("ГЏГ°ГЁГ«Г®Г¦ГҐГ­ГЁГҐ ГіГ¦ГҐ Г§Г ГЇГіГ№ГҐГ­Г®!");
                 singleton.Dispose();
                 Application.Exit();
             }
@@ -43,7 +34,7 @@ namespace Klavir
 
         }
 
-        // Преобразование нажатой клавиши в текст для отображения
+        // ГЏГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГҐ Г­Г Г¦Г ГІГ®Г© ГЄГ«Г ГўГЁГёГЁ Гў ГІГҐГЄГ±ГІ Г¤Г«Гї Г®ГІГ®ГЎГ°Г Г¦ГҐГ­ГЁГї
         public static string Key2Str(KeyEventArgs e, bool kCtrl = false, bool kShift = false)
         {
             bool added = false;
@@ -73,7 +64,7 @@ namespace Klavir
         }
 
 
-        // Для установки клавиатурного хука
+        // Г„Г«Гї ГіГ±ГІГ Г­Г®ГўГЄГЁ ГЄГ«Г ГўГЁГ ГІГіГ°Г­Г®ГЈГ® ГµГіГЄГ 
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
@@ -81,8 +72,8 @@ namespace Klavir
         private static LowLevelKeyboardProc procHook = HookCallback;
         private static IntPtr hookID = IntPtr.Zero;
 
-        private static bool isCtrl = false;   // true, если была нажата (162=LCtrl,  163=RCtrl)
-        private static bool isShift = false;  // true, если была нажата (160=LShift, 161=RShift)
+        private static bool isCtrl = false;   // true, ГҐГ±Г«ГЁ ГЎГ»Г«Г  Г­Г Г¦Г ГІГ  (162=LCtrl,  163=RCtrl)
+        private static bool isShift = false;  // true, ГҐГ±Г«ГЁ ГЎГ»Г«Г  Г­Г Г¦Г ГІГ  (160=LShift, 161=RShift)
 
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
         {
@@ -99,13 +90,13 @@ namespace Klavir
         {
             int kCode;
 
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYUP)  // Клавиша отпущена
+            if (nCode >= 0 && wParam == (IntPtr)WM_KEYUP)  // ГЉГ«Г ГўГЁГёГ  Г®ГІГЇГіГ№ГҐГ­Г 
             {
                 kCode = Marshal.ReadInt32(lParam);
                 if (kCode == 162 || kCode == 163) isCtrl = false;
                 else if (kCode == 160 || kCode == 161) isShift = false;
             }
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN) // Клавиша нажата
+            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN) // ГЉГ«Г ГўГЁГёГ  Г­Г Г¦Г ГІГ 
             {
                 kCode = Marshal.ReadInt32(lParam);
                 if (kCode == 162 || kCode == 163) isCtrl = true;
@@ -150,18 +141,18 @@ namespace Klavir
 
         public MyTrayApp()
         {
-            // Инициализация Tray Icon
+            // Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Tray Icon
             trayIcon = new NotifyIcon()
             {
                 Icon = Resources.AppIcon,
                 ContextMenuStrip = new ContextMenuStrip()
                 {
-                    Items = { new ToolStripMenuItem("Настройки", null, Show), new ToolStripMenuItem("Выход", null, Exit) }
+                    Items = { new ToolStripMenuItem("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ", null, Show), new ToolStripMenuItem("Г‚Г»ГµГ®Г¤", null, Exit) }
                 },
                 Visible = true
             };
 
-            // Загрузить данные из файла
+            // Г‡Г ГЈГ°ГіГ§ГЁГІГј Г¤Г Г­Г­Г»ГҐ ГЁГ§ ГґГ Г©Г«Г 
             var path = AppDomain.CurrentDomain.BaseDirectory;
             string configPath = Path.Combine(path, configName);
 
@@ -174,19 +165,19 @@ namespace Klavir
                 }
             }
 
-            // Сформировать путь для записи лог-файла
+            // Г‘ГґГ®Г°Г¬ГЁГ°Г®ГўГ ГІГј ГЇГіГІГј Г¤Г«Гї Г§Г ГЇГЁГ±ГЁ Г«Г®ГЈ-ГґГ Г©Г«Г 
             logPath = Path.Combine(path, "log.txt");
         }
 
 
-        // Меню Exit
+        // ГЊГҐГ­Гѕ Exit
         void Exit(object? sender, EventArgs e)
         {
             trayIcon.Visible = false;
             Application.Exit();
         }
 
-        // Меню Show
+        // ГЊГҐГ­Гѕ Show
         void Show(object? sender, EventArgs e)
         {
             Form1 f = new Form1();
@@ -194,7 +185,7 @@ namespace Klavir
         }
 
 
-        // Обработчик щелчка левой кнопкой мыши
+        // ГЋГЎГ°Г ГЎГ®ГІГ·ГЁГЄ Г№ГҐГ«Г·ГЄГ  Г«ГҐГўГ®Г© ГЄГ­Г®ГЇГЄГ®Г© Г¬Г»ГёГЁ
         private void notifyIcon_Click(object sender, EventArgs e)
         {
             var eventArgs = e as MouseEventArgs;
@@ -206,7 +197,7 @@ namespace Klavir
             }
         }
 
-        // Считанную строку - в словарь keylist
+        // Г‘Г·ГЁГІГ Г­Г­ГіГѕ Г±ГІГ°Г®ГЄГі - Гў Г±Г«Г®ГўГ Г°Гј keylist
         public static void Str2keylist(string s)
         {
             if (s == null) return;
@@ -228,7 +219,7 @@ namespace Klavir
         }
 
 
-        // Вернуть по полученной комбинации клавиш либо строку для запуска либо null, если не найдено
+        // Г‚ГҐГ°Г­ГіГІГј ГЇГ® ГЇГ®Г«ГіГ·ГҐГ­Г­Г®Г© ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГЁ ГЄГ«Г ГўГЁГё Г«ГЁГЎГ® Г±ГІГ°Г®ГЄГі Г¤Г«Гї Г§Г ГЇГіГ±ГЄГ  Г«ГЁГЎГ® null, ГҐГ±Г«ГЁ Г­ГҐ Г­Г Г©Г¤ГҐГ­Г®
         public static string? SearchInKeylist(string s)
         {
             string? res;
@@ -239,14 +230,14 @@ namespace Klavir
         }
 
 
-        // Записать строку в лог по адресу logPath, если s != ""
+        // Г‡Г ГЇГЁГ±Г ГІГј Г±ГІГ°Г®ГЄГі Гў Г«Г®ГЈ ГЇГ® Г Г¤Г°ГҐГ±Гі logPath, ГҐГ±Г«ГЁ s != ""
         public static async void Save2Log(string s)
         {
             if (s != null)
             {
                 if (s != "")
                 {
-                    // Записать строку в файл
+                    // Г‡Г ГЇГЁГ±Г ГІГј Г±ГІГ°Г®ГЄГі Гў ГґГ Г©Г«
                     using (StreamWriter writer = new StreamWriter(logPath, true))
                     {
                         await writer.WriteLineAsync(s);
